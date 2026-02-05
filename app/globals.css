@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Brand colors */
+  --color-brand-blue: #141beb;
+  --color-brand-cyan: #02eec4;
+}
+
+html,
+body {
+  height: 100%;
+}
