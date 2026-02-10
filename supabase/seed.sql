@@ -159,50 +159,57 @@ VALUES
   ('20000000-0000-0000-0000-000000000005', '10000000-0000-0000-0000-000000000006', 'heart')
 ON CONFLICT DO NOTHING;
 
--- Insert today's daily challenges (using the template IDs from gamification.ts)
-INSERT INTO daily_challenges (challenge_id, challenge_type, description, points, target_date)
+-- Insert today's daily challenges
+INSERT INTO daily_challenges (date, challenge_type, description, points)
 VALUES
-  ('challenge-' || TO_CHAR(NOW(), 'YYYY-MM-DD') || '-1', 'make_friends', 'Send 3 friend requests to classmates', 100, CURRENT_DATE),
-  ('challenge-' || TO_CHAR(NOW(), 'YYYY-MM-DD') || '-2', 'create_post', 'Share a post about your day', 50, CURRENT_DATE),
-  ('challenge-' || TO_CHAR(NOW(), 'YYYY-MM-DD') || '-3', 'help_classmate', 'Answer a question in your feed', 75, CURRENT_DATE)
-ON CONFLICT (challenge_id) DO NOTHING;
+  (CURRENT_DATE, 'make_friends', 'Send 3 friend requests to classmates', 100),
+  (CURRENT_DATE, 'create_post', 'Share a post about your day', 50),
+  (CURRENT_DATE, 'help_classmate', 'Answer a question in your feed', 75)
+ON CONFLICT (date, challenge_type) DO NOTHING;
 
 -- Mark some challenges as completed for active users
-INSERT INTO user_challenge_progress (user_id, challenge_id, completed, progress, completed_at)
+-- Get the challenge IDs from the ones we just created
+WITH challenge_ids AS (
+  SELECT id, challenge_type FROM daily_challenges WHERE date = CURRENT_DATE
+)
+INSERT INTO user_challenge_progress (user_id, challenge_id, completed, completed_at)
 VALUES
-  ('10000000-0000-0000-0000-000000000001', 'challenge-' || TO_CHAR(NOW(), 'YYYY-MM-DD') || '-1', true, 3, NOW() - INTERVAL '3 hours'),
-  ('10000000-0000-0000-0000-000000000001', 'challenge-' || TO_CHAR(NOW(), 'YYYY-MM-DD') || '-2', true, 1, NOW() - INTERVAL '2 hours'),
-  ('10000000-0000-0000-0000-000000000002', 'challenge-' || TO_CHAR(NOW(), 'YYYY-MM-DD') || '-2', true, 1, NOW() - INTERVAL '2 hours'),
-  ('10000000-0000-0000-0000-000000000003', 'challenge-' || TO_CHAR(NOW(), 'YYYY-MM-DD') || '-1', true, 3, NOW() - INTERVAL '1 hour'),
-  ('10000000-0000-0000-0000-000000000003', 'challenge-' || TO_CHAR(NOW(), 'YYYY-MM-DD') || '-2', true, 1, NOW() - INTERVAL '5 hours'),
-  ('10000000-0000-0000-0000-000000000003', 'challenge-' || TO_CHAR(NOW(), 'YYYY-MM-DD') || '-3', true, 1, NOW() - INTERVAL '4 hours')
+  -- Sarah completed make_friends and create_post
+  ('10000000-0000-0000-0000-000000000001', (SELECT id FROM challenge_ids WHERE challenge_type = 'make_friends'), true, NOW() - INTERVAL '3 hours'),
+  ('10000000-0000-0000-0000-000000000001', (SELECT id FROM challenge_ids WHERE challenge_type = 'create_post'), true, NOW() - INTERVAL '2 hours'),
+  -- Mike completed create_post
+  ('10000000-0000-0000-0000-000000000002', (SELECT id FROM challenge_ids WHERE challenge_type = 'create_post'), true, NOW() - INTERVAL '2 hours'),
+  -- Emma completed all 3
+  ('10000000-0000-0000-0000-000000000003', (SELECT id FROM challenge_ids WHERE challenge_type = 'make_friends'), true, NOW() - INTERVAL '1 hour'),
+  ('10000000-0000-0000-0000-000000000003', (SELECT id FROM challenge_ids WHERE challenge_type = 'create_post'), true, NOW() - INTERVAL '5 hours'),
+  ('10000000-0000-0000-0000-000000000003', (SELECT id FROM challenge_ids WHERE challenge_type = 'help_classmate'), true, NOW() - INTERVAL '4 hours')
 ON CONFLICT DO NOTHING;
 
 -- Add some achievements to top users
-INSERT INTO user_achievements (user_id, achievement_id, unlocked_at)
+INSERT INTO user_achievements (user_id, achievement_id, earned_at)
 SELECT '10000000-0000-0000-0000-000000000001', id, NOW() - INTERVAL '20 days'
 FROM achievements WHERE id IN ('first-post', 'first-friend', 'social-butterfly', 'helpful-classmate', 'week-streak')
 ON CONFLICT DO NOTHING;
 
-INSERT INTO user_achievements (user_id, achievement_id, unlocked_at)
+INSERT INTO user_achievements (user_id, achievement_id, earned_at)
 SELECT '10000000-0000-0000-0000-000000000003', id, NOW() - INTERVAL '15 days'
 FROM achievements WHERE id IN ('first-post', 'first-friend', 'social-butterfly', 'content-creator')
 ON CONFLICT DO NOTHING;
 
-INSERT INTO user_achievements (user_id, achievement_id, unlocked_at)
+INSERT INTO user_achievements (user_id, achievement_id, earned_at)
 SELECT '10000000-0000-0000-0000-000000000006', id, NOW() - INTERVAL '8 days'
 FROM achievements WHERE id IN ('first-post', 'first-friend', 'helpful-classmate')
 ON CONFLICT DO NOTHING;
 
 -- Insert some notifications for users
-INSERT INTO notifications (user_id, type, title, message, created_at, is_read)
+INSERT INTO notifications (user_id, type, title, message, created_at, read)
 VALUES
   ('10000000-0000-0000-0000-000000000001', 'friend_request', 'New Friend Request', 'Emma Li wants to connect with you', NOW() - INTERVAL '30 minutes', false),
   ('10000000-0000-0000-0000-000000000002', 'achievement', 'Achievement Unlocked!', 'You earned the "Helpful Classmate" badge', NOW() - INTERVAL '2 hours', false),
   ('10000000-0000-0000-0000-000000000003', 'level_up', 'Level Up!', 'You''ve reached Level 10', NOW() - INTERVAL '1 day', true),
-  ('10000000-0000-0000-0000-000000000004', 'streak_milestone', 'Streak Milestone!', 'You''ve maintained a 5-day streak', NOW() - INTERVAL '3 hours', false),
+  ('10000000-0000-0000-0000-000000000004', 'streak_risk', 'Keep Your Streak!', 'You''ve maintained a 5-day streak', NOW() - INTERVAL '3 hours', false),
   ('10000000-0000-0000-0000-000000000005', 'post_reaction', 'New Reaction', 'Sarah Johnson reacted to your post', NOW() - INTERVAL '4 hours', true),
-  ('10000000-0000-0000-0000-000000000001', 'challenge_complete', 'Challenge Completed!', 'You completed all daily challenges! +225 points', NOW() - INTERVAL '2 hours', false)
+  ('10000000-0000-0000-0000-000000000001', 'challenge_available', 'New Challenges!', 'Check out today''s daily challenges!', NOW() - INTERVAL '2 hours', false)
 ON CONFLICT DO NOTHING;
 
 -- Verification query
