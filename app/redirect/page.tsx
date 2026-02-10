@@ -3,6 +3,9 @@
 import { LoginCallBack } from '@opencampus/ocid-connect-js';
 import { useRouter } from 'next/navigation';
 
+// Prevent static generation - this page needs client-side auth
+export const dynamic = 'force-dynamic';
+
 function CustomLoadingComponent() {
   return (
     <div className="min-h-screen flex items-center justify-center">
