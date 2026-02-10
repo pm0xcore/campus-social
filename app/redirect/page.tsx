@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { LoginCallBack } from '@opencampus/ocid-connect-js';
 import { useRouter } from 'next/navigation';
-import { getAccount } from '@/lib/auth-context';
 
-function LoadingComponent() {
+function CustomLoadingComponent() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
@@ -15,13 +14,13 @@ function LoadingComponent() {
   );
 }
 
-function ErrorComponent({ error }: { error?: string }) {
+function CustomErrorComponent() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center p-6 bg-red-50 rounded-lg max-w-md">
         <p className="text-red-600 font-medium mb-2">Login Failed</p>
         <p className="text-gray-600 text-sm mb-4">
-          {error || 'There was an error completing your login. Please try again.'}
+          There was an error completing your login. Please try again.
         </p>
         <a
           href="/"
@@ -36,42 +35,24 @@ function ErrorComponent({ error }: { error?: string }) {
 
 export default function RedirectPage() {
   const router = useRouter();
-  const [error, setError] = useState<string>();
 
-  useEffect(() => {
-    const handleRedirect = async () => {
-      try {
-        const account = getAccount();
-        if (!account) {
-          setError('Authentication system not initialized');
-          return;
-        }
+  const handleSuccess = () => {
+    // Give the auth context time to update from the subscription
+    setTimeout(() => {
+      router.push('/');
+    }, 500);
+  };
 
-        // Get the underlying OCID Connect SDK instance
-        // The SDK will handle the OAuth redirect callback automatically
-        // and update the auth state, which will trigger our auth context subscription
-        
-        // Wait a moment for the SDK to process the redirect
-        await new Promise(resolve => setTimeout(resolve, 1000));
+  const handleError = (error: Error) => {
+    console.error('Login error:', error);
+  };
 
-        // Check if authentication succeeded
-        if (account.isAuthenticated()) {
-          router.push('/');
-        } else {
-          setError('Authentication did not complete successfully');
-        }
-      } catch (err) {
-        console.error('Redirect error:', err);
-        setError(err instanceof Error ? err.message : 'Unknown error occurred');
-      }
-    };
-
-    handleRedirect();
-  }, [router]);
-
-  if (error) {
-    return <ErrorComponent error={error} />;
-  }
-
-  return <LoadingComponent />;
+  return (
+    <LoginCallBack
+      successCallback={handleSuccess}
+      errorCallback={handleError}
+      customLoadingComponent={CustomLoadingComponent}
+      customErrorComponent={CustomErrorComponent}
+    />
+  );
 }
