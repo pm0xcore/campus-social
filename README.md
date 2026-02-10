@@ -83,21 +83,35 @@ export async function GET() {
 
 ## Authentication
 
-Mini-apps run embedded in the OC Hub iframe. Authentication is shared via cookies on `.educhain.xyz` - no login flow needed.
+Mini-apps run embedded in the OC Hub iframe. Authentication is shared via cookies on `.educhain.xyz` - no login flow needed in production.
+
+### OCHub Integration
+
+This app is designed to run as a mini-app within OCHub:
+
+1. **Cookie-based Auth**: Uses `@opencampus/ochub-utils` for seamless authentication via shared cookies
+2. **Iframe-friendly**: Configured with proper CSP headers to allow embedding from `*.educhain.xyz`
+3. **Analytics Integration**: Tracks events via `OCAnalytics` from ochub-utils
+4. **Auto-initialization**: Auth state is automatically shared when embedded in OCHub
+
+### Development vs Production
+
+- **Development**: App runs standalone at `localhost:3000`, requires manual login
+- **Production**: App is embedded in OCHub iframe, auth is automatic via shared cookies
 
 ### Access User Info
+
 ```tsx
 'use client';
-import { useOCAuth } from '@opencampus/ocid-connect-js';
+import { useAuth } from '@/lib/auth-context';
 
 export function MyComponent() {
-  const auth = useOCAuth();
-  const authState = auth?.authState;
+  const { isAuthenticated, ocid, ethAddress, isInitialized } = useAuth();
 
-  if (!authState || authState.isLoading) return <p>Loading...</p>;
-  if (!authState.isAuthenticated) return <p>Not logged in</p>;
+  if (!isInitialized) return <p>Loading...</p>;
+  if (!isAuthenticated) return <p>Not logged in</p>;
 
-  return <p>Welcome, {authState.OCId}!</p>;
+  return <p>Welcome, {ocid}!</p>;
 }
 ```
 
@@ -112,11 +126,24 @@ trackEvent('button_clicked', { button: 'signup' });
 
 ## Environment Variables
 
+### Required for OCHub Integration
+
 | Variable | Description |
 |----------|-------------|
-| `NEXT_PUBLIC_AUTH_CLIENT_ID` | OCConnect client ID |
-| `NEXT_PUBLIC_AUTH_SANDBOX` | Use sandbox mode (default: `true`) |
-| `NEXT_PUBLIC_GA_ID` | Google Analytics ID (optional) |
+| `NEXT_PUBLIC_AUTH_CLIENT_ID` | OCConnect client ID for authentication |
+| `NEXT_PUBLIC_AUTH_SANDBOX` | Use sandbox mode (default: `true` for staging, `false` for production) |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (server-side only) |
+
+### Optional
+
+| Variable | Description |
+|----------|-------------|
+| `JWKS_URL` | Custom JWKS URL for token verification (uses default if not set) |
+| `NEXT_PUBLIC_GA_ID` | Google Analytics ID for tracking |
+| `OC_VC_ANALYTICS_API_URL` | Open Campus VC Analytics API endpoint (defaults to staging) |
+| `NEXT_PUBLIC_USE_MOCK_DATA` | Use mock data for development (default: `false`) |
 
 ## Scripts
 
