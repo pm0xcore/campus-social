@@ -6,11 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@opencampus/ochub-utils": "^0.4.0",
+    "@opencampus/ochub-utils": "^0.4.1",
     "@opencampus/ocid-connect-js": "^2.0.7",
+    "@supabase/supabase-js": "^2.95.3",
     "jose": "^6.1.3",
     "next": "^14.2.0",
     "react": "^18.3.0",
@@ -18,10 +23,17 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^20.0.0",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^5.1.3",
+    "jsdom": "^28.0.0",
+    "supabase": "^2.76.6",
     "tailwindcss": "^4",
-    "typescript": "^5.5.0"
+    "typescript": "^5.5.0",
+    "vitest": "^4.0.18"
   }
 }

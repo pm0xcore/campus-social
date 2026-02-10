@@ -1,4 +1,4 @@
-import { createRemoteJWKSet, jwtVerify, JWTPayload } from "jose";
+import { createRemoteJWKSet, jwtVerify } from "jose";
 import { NextRequest, NextResponse } from "next/server";
 import { env } from "./env";
 
@@ -11,13 +11,17 @@ export interface AuthState {
   ethAddress?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type RouteContext = { params?: Record<string, any> };
+
 /**
  * Wrap API route handlers with OCID authentication
+ * Supports both simple routes and dynamic routes with params
  */
-export function withAuth(
-  handler: (request: NextRequest, auth: AuthState) => Promise<NextResponse>,
+export function withAuth<T extends RouteContext = RouteContext>(
+  handler: (request: NextRequest, auth: AuthState, context?: T) => Promise<NextResponse>,
 ) {
-  return async (request: NextRequest): Promise<NextResponse> => {
+  return async (request: NextRequest, context?: T): Promise<NextResponse> => {
     try {
       const authHeader = request.headers.get("Authorization");
 
@@ -43,7 +47,7 @@ export function withAuth(
       return handler(request, {
         OCId,
         ethAddress: payload.eth_address as string | undefined,
-      });
+      }, context);
     } catch (error) {
       console.error("JWT verification failed:", error);
       return NextResponse.json(

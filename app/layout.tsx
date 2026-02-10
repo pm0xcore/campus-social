@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
 import { Providers } from './providers';
+import { NavBar } from '@/components/NavBar';
+import { Header } from '@/components/Header';
+import { SOSButton } from '@/components/SOSButton';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Open Campus Mini-App',
-  description: 'A minimal Next.js template with Open Campus authentication',
+  title: 'Campus Social',
+  description: 'Connect with your university community on Open Campus',
 };
 
 export default function RootLayout({
@@ -14,8 +17,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
-      <body className="h-full">
-        <Providers>{children}</Providers>
+      <body className="h-full pt-14 pb-16">
+        <Providers>
+          <Header />
+          {children}
+          <SOSButton />
+          <NavBar />
+        </Providers>
       </body>
     </html>
   );
