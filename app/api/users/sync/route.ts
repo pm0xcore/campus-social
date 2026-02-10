@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     const { data: testUniv } = await supabase
       .from('universities')
       .select('id')
-      .eq('id', 'test-univ-1')
+      .eq('issuer_did', 'did:oc:university:test')
       .single();
     
     const { data: newUser, error } = await supabase
