@@ -28,7 +28,10 @@ export function Header() {
   const handleLogout = async () => {
     try {
       const account = getAccount();
-      await account?.logout();
+      const sdk = account?.getSDKInstance?.();
+      if (sdk?.signOut) {
+        await sdk.signOut();
+      }
       window.location.href = '/';
     } catch (error) {
       console.error('Logout error:', error);
