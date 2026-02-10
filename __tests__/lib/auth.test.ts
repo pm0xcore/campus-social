@@ -58,6 +58,7 @@ describe('withAuth middleware', () => {
     vi.mocked(jwtVerify).mockResolvedValueOnce({
       payload: mockPayload,
       protectedHeader: { alg: 'RS256' },
+      key: {} as any,
     });
 
     const handler = vi.fn().mockResolvedValue(new Response('OK'));

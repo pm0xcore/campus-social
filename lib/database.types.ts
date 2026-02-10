@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          created_at: string | null
+          description: string
+          icon: string
+          id: string
+          name: string
+          points: number | null
+          trigger_threshold: number
+          trigger_type: string
+          type: string
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          icon: string
+          id?: string
+          name: string
+          points?: number | null
+          trigger_threshold: number
+          trigger_type: string
+          type: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          points?: number | null
+          trigger_threshold?: number
+          trigger_type?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      daily_challenges: {
+        Row: {
+          challenge_type: string
+          created_at: string | null
+          date: string
+          description: string
+          id: string
+          points: number | null
+        }
+        Insert: {
+          challenge_type: string
+          created_at?: string | null
+          date: string
+          description: string
+          id?: string
+          points?: number | null
+        }
+        Update: {
+          challenge_type?: string
+          created_at?: string | null
+          date?: string
+          description?: string
+          id?: string
+          points?: number | null
+        }
+        Relationships: []
+      }
       friendships: {
         Row: {
           accepted_at: string | null
@@ -218,6 +281,47 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          created_at: string | null
+          data: Json | null
+          id: string
+          message: string
+          read: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          data?: Json | null
+          id?: string
+          message: string
+          read?: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          data?: Json | null
+          id?: string
+          message?: string
+          read?: boolean | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
           author_id: string
@@ -320,6 +424,138 @@ export type Database = {
         }
         Relationships: []
       }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          earned_at: string | null
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          earned_at?: string | null
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          earned_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_achievements_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_challenge_progress: {
+        Row: {
+          challenge_id: string
+          completed: boolean | null
+          completed_at: string | null
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed?: boolean | null
+          completed_at?: string | null
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed?: boolean | null
+          completed_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_challenge_progress_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "daily_challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_challenge_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_stats: {
+        Row: {
+          created_at: string | null
+          friends_count: number | null
+          groups_joined_count: number | null
+          last_active_date: string | null
+          level: number | null
+          messages_sent_count: number | null
+          points: number | null
+          posts_count: number | null
+          questions_answered_count: number | null
+          streak_days: number | null
+          university_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          friends_count?: number | null
+          groups_joined_count?: number | null
+          last_active_date?: string | null
+          level?: number | null
+          messages_sent_count?: number | null
+          points?: number | null
+          posts_count?: number | null
+          questions_answered_count?: number | null
+          streak_days?: number | null
+          university_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          friends_count?: number | null
+          groups_joined_count?: number | null
+          last_active_date?: string | null
+          level?: number | null
+          messages_sent_count?: number | null
+          points?: number | null
+          posts_count?: number | null
+          questions_answered_count?: number | null
+          streak_days?: number | null
+          university_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_stats_university_id_fkey"
+            columns: ["university_id"]
+            isOneToOne: false
+            referencedRelation: "universities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_stats_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           avatar_url: string | null
@@ -328,6 +564,7 @@ export type Database = {
           current_focus: string | null
           display_name: string | null
           eth_address: string | null
+          has_completed_onboarding: boolean | null
           id: string
           last_seen_at: string | null
           ocid: string
@@ -340,6 +577,7 @@ export type Database = {
           current_focus?: string | null
           display_name?: string | null
           eth_address?: string | null
+          has_completed_onboarding?: boolean | null
           id?: string
           last_seen_at?: string | null
           ocid: string
@@ -352,6 +590,7 @@ export type Database = {
           current_focus?: string | null
           display_name?: string | null
           eth_address?: string | null
+          has_completed_onboarding?: boolean | null
           id?: string
           last_seen_at?: string | null
           ocid?: string
@@ -513,3 +752,8 @@ export type Post = Database['public']['Tables']['posts']['Row'];
 export type Group = Database['public']['Tables']['groups']['Row'];
 export type Friendship = Database['public']['Tables']['friendships']['Row'];
 export type Message = Database['public']['Tables']['messages']['Row'];
+export type UserStats = Database['public']['Tables']['user_stats']['Row'];
+export type Achievement = Database['public']['Tables']['achievements']['Row'];
+export type Notification = Database['public']['Tables']['notifications']['Row'];
+export type DailyChallenge = Database['public']['Tables']['daily_challenges']['Row'];
+

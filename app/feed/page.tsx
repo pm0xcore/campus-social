@@ -151,6 +151,24 @@ export default function FeedPage() {
           />
         </div>
 
+        {/* Post prompt for new users */}
+        {posts.length === 0 && (
+          <div className="mb-6 p-6 bg-gradient-to-br from-brand-blue/10 to-brand-cyan/10 rounded-xl border-2 border-brand-blue/20">
+            <h3 className="font-semibold text-gray-900 mb-2">Share Your First Win! 🎉</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Get started by sharing something awesome with your campus community.
+            </p>
+            <div className="space-y-2 text-sm">
+              <p className="text-gray-700">💡 <strong>Examples:</strong></p>
+              <ul className="list-disc list-inside space-y-1 text-gray-600 ml-4">
+                <li>"Just deployed my first smart contract on testnet!"</li>
+                <li>"Aced the blockchain fundamentals midterm"</li>
+                <li>"Built a DeFi dashboard this weekend"</li>
+              </ul>
+            </div>
+          </div>
+        )}
+
         {/* Filters */}
         <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
           {filters.map((f) => (
@@ -189,8 +207,25 @@ export default function FeedPage() {
             ))}
           </div>
         ) : filteredPosts.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500">No posts yet. Be the first to share!</p>
+          <div className="text-center py-16 px-4 bg-white rounded-xl border border-gray-200">
+            <span className="text-6xl mb-4 block">📱</span>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              {filter === 'all' ? 'Your feed is empty!' : `No ${filter}s yet`}
+            </h3>
+            <p className="text-gray-500 mb-6">
+              {filter === 'all' 
+                ? 'Add friends to see their posts or be the first to share!'
+                : `Be the first to post a ${filter}!`
+              }
+            </p>
+            <div className="flex gap-3 justify-center">
+              <a
+                href="/discover"
+                className="px-6 py-3 bg-gradient-to-r from-brand-blue to-brand-cyan text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
+              >
+                Discover Classmates (+50 pts per friend)
+              </a>
+            </div>
           </div>
         ) : (
           <div className="space-y-4">

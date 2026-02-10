@@ -14,11 +14,11 @@ interface CreatePostProps {
   showVisibility?: boolean;
 }
 
-const POST_TYPES: { value: PostType; label: string; icon: string }[] = [
-  { value: 'post', label: 'Post', icon: '💬' },
-  { value: 'win', label: 'Win', icon: '🎉' },
-  { value: 'question', label: 'Question', icon: '❓' },
-  { value: 'resource', label: 'Resource', icon: '📎' },
+const POST_TYPES: { value: PostType; label: string; icon: string; points: number }[] = [
+  { value: 'post', label: 'Post', icon: '💬', points: 10 },
+  { value: 'win', label: 'Win', icon: '🎉', points: 25 },
+  { value: 'question', label: 'Question', icon: '❓', points: 15 },
+  { value: 'resource', label: 'Resource', icon: '📎', points: 30 },
 ];
 
 const VISIBILITY_OPTIONS: { value: Visibility; label: string; icon: string }[] = [
@@ -105,7 +105,7 @@ export function CreatePost({ authorId, onPostCreated, groupId, getAuthToken, sho
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                {pt.icon} {pt.label}
+                {pt.icon} {pt.label} <span className="text-xs opacity-75">(+{pt.points} pts)</span>
               </button>
             ))}
           </div>

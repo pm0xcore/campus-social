@@ -1,6 +1,7 @@
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import { NextRequest, NextResponse } from "next/server";
 import { env } from "./env";
+import { createClient } from "./supabase";
 
 const JWKS_URL =
   env.JWKS_URL || "https://static.opencampus.xyz/jwks/jwks-staging.json";
@@ -56,4 +57,46 @@ export function withAuth<T extends RouteContext = RouteContext>(
       );
     }
   };
+}
+
+// Verify auth and return user from database
+export interface AuthResult {
+  authenticated: boolean;
+  user: { id: string; ocid: string } | null;
+  error?: string;
+}
+
+export async function verifyAuth(request: NextRequest): Promise<AuthResult> {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return { authenticated: false, user: null, error: "No token provided" };
+  }
+
+  const token = authHeader.slice(7);
+
+  try {
+    const { payload } = await jwtVerify(token, jwks);
+    const OCId = payload.edu_username as string | undefined;
+
+    if (!OCId) {
+      return { authenticated: false, user: null, error: "Invalid token" };
+    }
+
+    // Get user from database
+    const supabase = createClient();
+    const { data: user, error } = await supabase
+      .from("users")
+      .select("id, ocid")
+      .eq("ocid", OCId)
+      .single();
+
+    if (error || !user) {
+      return { authenticated: false, user: null, error: "User not found" };
+    }
+
+    return { authenticated: true, user };
+  } catch (error) {
+    console.error("Token verification failed:", error);
+    return { authenticated: false, user: null, error: "Invalid token" };
+  }
 }

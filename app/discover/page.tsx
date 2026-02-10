@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { getAccount } from '@/lib/auth-context';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 import { trackEvent } from '@/lib/analytics';
+import { MissionBanner } from '@/components/MissionBanner';
 
 interface DiscoverUser {
   id: string;
@@ -21,13 +22,14 @@ export default function DiscoverPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [sentRequests, setSentRequests] = useState<Set<string>>(new Set());
+  const [friendsCount, setFriendsCount] = useState(0);
 
   const getAuthToken = useCallback(() => {
     return getAccount()?.getIdToken?.();
   }, []);
 
   const fetchUsers = useCallback(async () => {
-    const token = getAuthToken();
+    const token = getAccount()?.getIdToken?.();
     if (!token) {
       setLoading(false);
       return;
@@ -44,6 +46,15 @@ export default function DiscoverPage() {
       if (res.ok) {
         const data = await res.json();
         setUsers(data.users || []);
+      }
+
+      // Also fetch friends count for mission progress
+      const friendsRes = await fetch('/api/friends', {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      if (friendsRes.ok) {
+        const friendsData = await friendsRes.json();
+        setFriendsCount(friendsData.friends?.length || 0);
       }
     } catch (error) {
       console.error('Failed to fetch users:', error);
@@ -152,6 +163,20 @@ export default function DiscoverPage() {
       </header>
 
       <div className="max-w-2xl mx-auto px-4 py-6">
+        {/* Mission Banner */}
+        {user.university && friendsCount < 3 && (
+          <div className="mb-6">
+            <MissionBanner
+              title="Find Your First 3 Classmates"
+              description="Connect with your campus community"
+              progress={friendsCount}
+              total={3}
+              reward="100 points + unlock DMs"
+              icon="🎯"
+            />
+          </div>
+        )}
+
         {!user.university ? (
           <div className="text-center py-12 bg-white rounded-xl border border-gray-200">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
@@ -238,7 +263,7 @@ export default function DiscoverPage() {
                         : 'bg-brand-blue text-white hover:opacity-90'
                     }`}
                   >
-                    {hasSentRequest ? 'Request Sent' : 'Add Friend'}
+                    {hasSentRequest ? 'Request Sent' : 'Add Friend (+50 pts)'}
                   </button>
                 </div>
               );
