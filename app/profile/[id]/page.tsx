@@ -127,6 +127,25 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
     }
   };
 
+  const handleAcceptRequest = async () => {
+    const token = getAuthToken();
+    if (!token || !profileUser || !profileUser.friendshipId) return;
+
+    const res = await fetch(`/api/friends/${profileUser.friendshipId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ action: 'accept' }),
+    });
+
+    if (res.ok) {
+      fetchProfile();
+      trackEvent('friend_request_accepted', { friendshipId: profileUser.friendshipId });
+    }
+  };
+
   const handleReaction = async (postId: string, emoji: string) => {
     const token = getAuthToken();
     if (!token) return;
@@ -215,12 +234,21 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                   Message
                 </button>
               ) : isPending ? (
-                <button
-                  disabled
-                  className="flex-1 py-2 bg-gray-100 text-gray-400 rounded-lg cursor-default"
-                >
-                  {profileUser.friendshipStatus?.isRequester ? 'Request Sent' : 'Respond to Request'}
-                </button>
+                profileUser.friendshipStatus?.isRequester ? (
+                  <button
+                    disabled
+                    className="flex-1 py-2 bg-gray-100 text-gray-400 rounded-lg cursor-default"
+                  >
+                    Request Sent
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleAcceptRequest}
+                    className="flex-1 py-2 bg-brand-blue text-white rounded-lg hover:opacity-90 transition-opacity"
+                  >
+                    Accept Request
+                  </button>
+                )
               ) : (
                 <button
                   onClick={handleAddFriend}
