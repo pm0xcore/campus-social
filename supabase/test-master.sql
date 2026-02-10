@@ -4,17 +4,11 @@
 -- Copy/paste this entire file into Supabase SQL Editor
 -- to run all tests at once
 
-\echo '=========================================='
-\echo 'Campus Social - Database Verification Tests'
-\echo 'Date: 2026-02-10'
-\echo '=========================================='
-\echo ''
-
 -- ============================================
 -- TEST 1: Schema Verification
 -- ============================================
-\echo '1. SCHEMA VERIFICATION'
-\echo '----------------------'
+
+SELECT '========== TEST 1: SCHEMA VERIFICATION ==========' as test_section;
 
 SELECT 'Total Tables: ' || COUNT(*)::TEXT as result
 FROM information_schema.tables 
@@ -25,13 +19,11 @@ FROM information_schema.tables
 WHERE table_schema = 'public' 
 ORDER BY table_name;
 
-\echo ''
-
 -- ============================================
 -- TEST 2: Users & Authentication
 -- ============================================
-\echo '2. USERS & AUTHENTICATION'
-\echo '-------------------------'
+
+SELECT '========== TEST 2: USERS & AUTHENTICATION ==========' as test_section;
 
 SELECT 
   'Total Users: ' || COUNT(*)::TEXT ||
@@ -50,13 +42,11 @@ LEFT JOIN user_stats us ON u.id = us.user_id
 ORDER BY u.created_at DESC
 LIMIT 8;
 
-\echo ''
-
 -- ============================================
 -- TEST 3: Friendships
 -- ============================================
-\echo '3. FRIENDSHIPS'
-\echo '--------------'
+
+SELECT '========== TEST 3: FRIENDSHIPS ==========' as test_section;
 
 SELECT 
   'Total: ' || COUNT(*)::TEXT ||
@@ -75,13 +65,11 @@ JOIN users u2 ON f.addressee_id = u2.id
 ORDER BY f.created_at DESC
 LIMIT 5;
 
-\echo ''
-
 -- ============================================
 -- TEST 4: Posts & Reactions
 -- ============================================
-\echo '4. POSTS & REACTIONS'
-\echo '--------------------'
+
+SELECT '========== TEST 4: POSTS & REACTIONS ==========' as test_section;
 
 SELECT 
   'Total Posts: ' || COUNT(*)::TEXT ||
@@ -101,13 +89,11 @@ GROUP BY p.id, u.ocid, p.type, p.content
 ORDER BY p.created_at DESC
 LIMIT 5;
 
-\echo ''
-
 -- ============================================
 -- TEST 5: Gamification
 -- ============================================
-\echo '5. GAMIFICATION SYSTEM'
-\echo '----------------------'
+
+SELECT '========== TEST 5: GAMIFICATION SYSTEM ==========' as test_section;
 
 SELECT 
   'Achievements: ' || COUNT(*)::TEXT ||
@@ -127,13 +113,11 @@ WHERE us.university_id = '00000000-0000-0000-0000-000000000001'
 ORDER BY us.points DESC
 LIMIT 6;
 
-\echo ''
-
 -- ============================================
 -- TEST 6: Notifications
 -- ============================================
-\echo '6. NOTIFICATIONS'
-\echo '----------------'
+
+SELECT '========== TEST 6: NOTIFICATIONS ==========' as test_section;
 
 SELECT 
   'Total: ' || COUNT(*)::TEXT ||
@@ -148,28 +132,24 @@ FROM notifications
 GROUP BY type
 ORDER BY count DESC;
 
-\echo ''
-
 -- ============================================
 -- TEST 7: Groups
 -- ============================================
-\echo '7. GROUPS'
-\echo '---------'
+
+SELECT '========== TEST 7: GROUPS ==========' as test_section;
 
 SELECT 
   'Total Groups: ' || COUNT(*)::TEXT ||
   ' | Total Members: ' || (SELECT COUNT(*)::TEXT FROM group_members) as "Groups Summary"
 FROM groups;
 
-\echo ''
-
 -- ============================================
 -- TEST 8: Data Integrity
 -- ============================================
-\echo '8. DATA INTEGRITY CHECKS'
-\echo '------------------------'
 
--- Check for any critical issues
+SELECT '========== TEST 8: DATA INTEGRITY CHECKS ==========' as test_section;
+
+-- Check for any critical issues (ALL SHOULD BE 0)
 SELECT 'Duplicate OCIDs' as check_name, COUNT(*) as issues_found
 FROM (
   SELECT ocid FROM users GROUP BY ocid HAVING COUNT(*) > 1
@@ -190,10 +170,10 @@ UNION ALL
 SELECT 'Users missing stats', COUNT(*)
 FROM users u LEFT JOIN user_stats us ON u.id = us.user_id WHERE us.user_id IS NULL;
 
--- Expected: All should show 0 issues_found
-
-\echo ''
-\echo '=========================================='
-\echo 'Tests Complete!'
-\echo 'Review results above for any issues (❌ or count > 0)'
-\echo '=========================================='
+-- ============================================
+-- TESTS COMPLETE
+-- ============================================
+-- Review results above
+-- All "issues_found" should be 0
+-- If any counts are > 0, investigate that specific test
+-- ============================================
