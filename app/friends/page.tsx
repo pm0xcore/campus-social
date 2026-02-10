@@ -36,6 +36,17 @@ export default function FriendsPage() {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<TabType>('friends');
 
+  // Check URL for tab parameter
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab') as TabType;
+      if (tabParam && ['friends', 'requests', 'sent'].includes(tabParam)) {
+        setTab(tabParam);
+      }
+    }
+  }, []);
+
   const getAuthToken = useCallback(() => {
     return getAccount()?.getIdToken?.();
   }, []);

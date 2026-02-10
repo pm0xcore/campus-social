@@ -2,6 +2,7 @@ import { UserInfo } from '@/components/UserInfo';
 import { FeedCard } from '@/components/FeedCard';
 import { StatsCard } from '@/components/StatsCard';
 import { DailyChallengeCard } from '@/components/DailyChallengeCard';
+import { FriendRequestBanner } from '@/components/FriendRequestBanner';
 
 const quickLinks = [
   { href: '/groups', label: 'Groups', icon: '👥', description: 'Join communities' },
@@ -33,6 +34,9 @@ export default function Home() {
       </section>
 
       <div className="max-w-2xl mx-auto px-6 py-8 space-y-6">
+        {/* Friend Request Banner */}
+        <FriendRequestBanner />
+
         {/* User Progress Dashboard */}
         <section>
           <UserInfo />
