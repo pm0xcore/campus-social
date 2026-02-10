@@ -29,10 +29,10 @@ export function Header() {
     try {
       const account = getAccount();
       const sdk = account?.getSDKInstance?.();
-      if (sdk?.signOut) {
-        await sdk.signOut();
+      if (sdk?.logout) {
+        // logout() accepts returnUrl to redirect after logout
+        await sdk.logout({ returnUrl: window.location.origin });
       }
-      window.location.href = '/';
     } catch (error) {
       console.error('Logout error:', error);
     }
