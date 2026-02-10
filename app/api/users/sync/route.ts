@@ -46,12 +46,21 @@ export async function POST(request: NextRequest) {
     // Create new user
     const displayName = ocid.split('.')[0] || ocid;
     
+    // For demo/testing: Auto-assign to test university if it exists
+    // In production, users would verify their university separately
+    const { data: testUniv } = await supabase
+      .from('universities')
+      .select('id')
+      .eq('id', 'test-univ-1')
+      .single();
+    
     const { data: newUser, error } = await supabase
       .from('users')
       .insert({
         ocid,
         eth_address: ethAddress,
         display_name: displayName,
+        university_id: testUniv?.id || null, // Auto-assign to test university
       })
       .select(`
         *,
