@@ -25,6 +25,16 @@ export function Header() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const account = getAccount();
+      await account?.logout();
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 h-14 bg-white border-b border-gray-200 z-50">
       <div className="max-w-2xl mx-auto h-full px-4 flex items-center justify-between">
@@ -42,6 +52,15 @@ export function Header() {
               <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded text-gray-700 max-w-[150px] truncate">
                 {ocid}
               </span>
+              <button
+                onClick={handleLogout}
+                className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm rounded-lg font-medium hover:bg-gray-200 transition-colors"
+                title="Logout"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+              </button>
             </>
           ) : (
             <button
