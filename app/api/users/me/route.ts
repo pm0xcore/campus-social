@@ -34,8 +34,8 @@ export const PATCH = withAuth(async (request: NextRequest, auth) => {
   const updates = await request.json();
 
   // Only allow updating specific fields
-  const allowedFields = ['display_name', 'bio', 'avatar_url', 'current_focus'];
-  const safeUpdates: Record<string, string> = {};
+  const allowedFields = ['display_name', 'bio', 'avatar_url', 'current_focus', 'has_completed_onboarding'];
+  const safeUpdates: Record<string, string | boolean> = {};
   
   for (const field of allowedFields) {
     if (updates[field] !== undefined) {

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Providers } from './providers';
 import { NavBar } from '@/components/NavBar';
 import { Header } from '@/components/Header';
+import { OnboardingGuard } from '@/components/OnboardingGuard';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -18,9 +19,11 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body className="h-full pt-14 pb-16">
         <Providers>
-          <Header />
-          {children}
-          <NavBar />
+          <OnboardingGuard>
+            <Header />
+            {children}
+            <NavBar />
+          </OnboardingGuard>
         </Providers>
       </body>
     </html>
