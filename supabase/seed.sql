@@ -188,17 +188,17 @@ ON CONFLICT DO NOTHING;
 -- Add some achievements to top users
 INSERT INTO user_achievements (user_id, achievement_id, earned_at)
 SELECT '10000000-0000-0000-0000-000000000001', id, NOW() - INTERVAL '20 days'
-FROM achievements WHERE id IN ('first-post', 'first-friend', 'social-butterfly', 'helpful-classmate', 'week-streak')
+FROM achievements WHERE name IN ('First Post', 'First Friend', 'Social Butterfly', 'Helpful Hero', 'Week Warrior')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO user_achievements (user_id, achievement_id, earned_at)
 SELECT '10000000-0000-0000-0000-000000000003', id, NOW() - INTERVAL '15 days'
-FROM achievements WHERE id IN ('first-post', 'first-friend', 'social-butterfly', 'content-creator')
+FROM achievements WHERE name IN ('First Post', 'First Friend', 'Social Butterfly', 'Content Creator')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO user_achievements (user_id, achievement_id, earned_at)
 SELECT '10000000-0000-0000-0000-000000000006', id, NOW() - INTERVAL '8 days'
-FROM achievements WHERE id IN ('first-post', 'first-friend', 'helpful-classmate')
+FROM achievements WHERE name IN ('First Post', 'First Friend', 'Helpful Hero')
 ON CONFLICT DO NOTHING;
 
 -- Insert some notifications for users
