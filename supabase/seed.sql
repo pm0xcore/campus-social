@@ -28,11 +28,10 @@ UPDATE user_stats
 SET 
   points = 2850,
   level = 12,
-  current_streak = 15,
-  longest_streak = 20,
-  total_posts = 45,
-  total_friends = 8,
-  achievements_unlocked = 10
+  streak_days = 15,
+  friends_count = 8,
+  posts_count = 45,
+  university_id = '00000000-0000-0000-0000-000000000001'
 WHERE user_id = '10000000-0000-0000-0000-000000000001';
 
 -- Mike - High performer
@@ -40,11 +39,10 @@ UPDATE user_stats
 SET 
   points = 1890,
   level = 8,
-  current_streak = 7,
-  longest_streak = 12,
-  total_posts = 28,
-  total_friends = 6,
-  achievements_unlocked = 7
+  streak_days = 7,
+  friends_count = 6,
+  posts_count = 28,
+  university_id = '00000000-0000-0000-0000-000000000001'
 WHERE user_id = '10000000-0000-0000-0000-000000000002';
 
 -- Emma - High performer
@@ -52,11 +50,10 @@ UPDATE user_stats
 SET 
   points = 2340,
   level = 10,
-  current_streak = 12,
-  longest_streak = 18,
-  total_posts = 38,
-  total_friends = 9,
-  achievements_unlocked = 9
+  streak_days = 12,
+  friends_count = 9,
+  posts_count = 38,
+  university_id = '00000000-0000-0000-0000-000000000001'
 WHERE user_id = '10000000-0000-0000-0000-000000000003';
 
 -- James - Mid performer
@@ -64,11 +61,10 @@ UPDATE user_stats
 SET 
   points = 1450,
   level = 6,
-  current_streak = 5,
-  longest_streak = 10,
-  total_posts = 22,
-  total_friends = 5,
-  achievements_unlocked = 5
+  streak_days = 5,
+  friends_count = 5,
+  posts_count = 22,
+  university_id = '00000000-0000-0000-0000-000000000001'
 WHERE user_id = '10000000-0000-0000-0000-000000000004';
 
 -- Olivia - Lower performer
@@ -76,11 +72,10 @@ UPDATE user_stats
 SET 
   points = 980,
   level = 5,
-  current_streak = 3,
-  longest_streak = 8,
-  total_posts = 15,
-  total_friends = 4,
-  achievements_unlocked = 4
+  streak_days = 3,
+  friends_count = 4,
+  posts_count = 15,
+  university_id = '00000000-0000-0000-0000-000000000001'
 WHERE user_id = '10000000-0000-0000-0000-000000000005';
 
 -- David - Top performer
@@ -88,11 +83,10 @@ UPDATE user_stats
 SET 
   points = 2100,
   level = 9,
-  current_streak = 10,
-  longest_streak = 15,
-  total_posts = 32,
-  total_friends = 7,
-  achievements_unlocked = 8
+  streak_days = 10,
+  friends_count = 7,
+  posts_count = 32,
+  university_id = '00000000-0000-0000-0000-000000000001'
 WHERE user_id = '10000000-0000-0000-0000-000000000006';
 
 -- Create some friendships between users
