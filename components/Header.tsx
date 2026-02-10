@@ -30,8 +30,8 @@ export function Header() {
       const account = getAccount();
       const sdk = account?.getSDKInstance?.();
       if (sdk?.logout) {
-        // logout() accepts returnUrl to redirect after logout
-        await sdk.logout({ returnUrl: window.location.origin });
+        // logout() accepts returnUrl string to redirect after logout
+        await sdk.logout(window.location.origin);
       }
     } catch (error) {
       console.error('Logout error:', error);
