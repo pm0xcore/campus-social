@@ -90,7 +90,7 @@ SET
 WHERE user_id = '10000000-0000-0000-0000-000000000006';
 
 -- Create some friendships between users
-INSERT INTO friendships (requester_id, addressee_id, status, created_at, updated_at)
+INSERT INTO friendships (requester_id, addressee_id, status, created_at, accepted_at)
 VALUES
   ('10000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000002', 'accepted', NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days'),
   ('10000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000003', 'accepted', NOW() - INTERVAL '23 days', NOW() - INTERVAL '23 days'),
