@@ -214,16 +214,16 @@ ON CONFLICT DO NOTHING;
 
 -- Verification query
 SELECT 
-  'Users' as table_name, COUNT(*) as count FROM users WHERE id LIKE 'user-test-%'
+  'Users' as table_name, COUNT(*) as count FROM users WHERE id::text LIKE '10000000-0000-0000-0000-%'
 UNION ALL
-SELECT 'User Stats', COUNT(*) FROM user_stats WHERE user_id LIKE 'user-test-%'
+SELECT 'User Stats', COUNT(*) FROM user_stats WHERE user_id::text LIKE '10000000-0000-0000-0000-%'
 UNION ALL
-SELECT 'Posts', COUNT(*) FROM posts WHERE id LIKE 'post-test-%'
+SELECT 'Posts', COUNT(*) FROM posts WHERE id::text LIKE '20000000-0000-0000-0000-%'
 UNION ALL
-SELECT 'Friendships', COUNT(*) FROM friendships WHERE requester_id LIKE 'user-test-%'
+SELECT 'Friendships', COUNT(*) FROM friendships WHERE requester_id::text LIKE '10000000-0000-0000-0000-%'
 UNION ALL
-SELECT 'Daily Challenges', COUNT(*) FROM daily_challenges WHERE challenge_id LIKE 'challenge-%'
+SELECT 'Daily Challenges', COUNT(*) FROM daily_challenges WHERE date = CURRENT_DATE
 UNION ALL
-SELECT 'Notifications', COUNT(*) FROM notifications WHERE user_id LIKE 'user-test-%'
+SELECT 'Notifications', COUNT(*) FROM notifications WHERE user_id::text LIKE '10000000-0000-0000-0000-%'
 UNION ALL
-SELECT 'User Achievements', COUNT(*) FROM user_achievements WHERE user_id LIKE 'user-test-%';
+SELECT 'User Achievements', COUNT(*) FROM user_achievements WHERE user_id::text LIKE '10000000-0000-0000-0000-%';
