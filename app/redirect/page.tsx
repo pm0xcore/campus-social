@@ -3,9 +3,6 @@
 import { LoginCallBack } from '@opencampus/ocid-connect-js';
 import { useRouter } from 'next/navigation';
 
-// Prevent static generation - this page needs client-side auth
-export const dynamic = 'force-dynamic';
-
 function CustomLoadingComponent() {
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -40,10 +37,7 @@ export default function RedirectPage() {
   const router = useRouter();
 
   const handleSuccess = () => {
-    // Give the auth context time to update from the subscription
-    setTimeout(() => {
-      router.push('/');
-    }, 500);
+    router.push('/');
   };
 
   const handleError = (error: Error) => {
