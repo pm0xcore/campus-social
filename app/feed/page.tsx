@@ -6,6 +6,7 @@ import { PostCard } from '@/components/PostCard';
 import { CreatePost } from '@/components/CreatePost';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 import { trackEvent } from '@/lib/analytics';
+import { USE_MOCK_DATA, MOCK_POSTS } from '@/lib/mock-data';
 
 interface Post {
   id: string;
@@ -32,6 +33,15 @@ export default function FeedPage() {
   }, []);
 
   const fetchPosts = useCallback(async () => {
+    // Use mock data if flag is enabled
+    if (USE_MOCK_DATA) {
+      setTimeout(() => {
+        setPosts(MOCK_POSTS as any);
+        setLoading(false);
+      }, 500);
+      return;
+    }
+
     const token = getAuthToken();
     if (!token) {
       setLoading(false);

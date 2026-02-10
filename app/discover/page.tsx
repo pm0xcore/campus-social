@@ -5,6 +5,7 @@ import { getAccount } from '@/lib/auth-context';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 import { trackEvent } from '@/lib/analytics';
 import { MissionBanner } from '@/components/MissionBanner';
+import { USE_MOCK_DATA, MOCK_DISCOVERABLE_USERS, MOCK_USER } from '@/lib/mock-data';
 
 interface DiscoverUser {
   id: string;
@@ -29,6 +30,22 @@ export default function DiscoverPage() {
   }, []);
 
   const fetchUsers = useCallback(async () => {
+    // Use mock data if flag is enabled
+    if (USE_MOCK_DATA) {
+      setTimeout(() => {
+        const filtered = search 
+          ? MOCK_DISCOVERABLE_USERS.filter(u => 
+              u.display_name.toLowerCase().includes(search.toLowerCase()) ||
+              u.bio?.toLowerCase().includes(search.toLowerCase())
+            )
+          : MOCK_DISCOVERABLE_USERS;
+        setUsers(filtered);
+        setFriendsCount(1); // Mock: 1 friend so far
+        setLoading(false);
+      }, 500);
+      return;
+    }
+
     const token = getAccount()?.getIdToken?.();
     if (!token) {
       setLoading(false);
